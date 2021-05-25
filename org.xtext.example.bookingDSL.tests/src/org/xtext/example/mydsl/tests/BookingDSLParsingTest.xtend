@@ -9,9 +9,18 @@ import org.eclipse.xtext.testing.util.ParseHelper
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
+import static org.junit.Assert.assertTrue
 
 @ExtendWith(InjectionExtension)
 @InjectWith(BookingDSLInjectorProvider)
 class BookingDSLParsingTest {
+	@Test def void test(){
+		assertTrue(true);
+	}
 	
+	//Assert gen
+	
+	//Assert parser
+	
+	//Assert validation
 }

@@ -7,7 +7,10 @@ import org.eclipse.xtext.validation.Check;
 import org.xtext.example.mydsl.bookingDSL.Attribute;
 import org.xtext.example.mydsl.bookingDSL.Booking;
 import org.xtext.example.mydsl.bookingDSL.BookingDSLPackage;
+import org.xtext.example.mydsl.bookingDSL.Customer;
 import org.xtext.example.mydsl.bookingDSL.Declaration;
+import org.xtext.example.mydsl.bookingDSL.Entity;
+import org.xtext.example.mydsl.bookingDSL.Resource;
 
 /**
  * This class contains custom validation rules. 
@@ -58,4 +61,58 @@ public class BookingDSLValidator extends AbstractBookingDSLValidator {
 			}
 		}
 	}
+	
+	@Check
+	public void warnIfAttributeNotCap(Attribute attri) {
+		if(!Character.isUpperCase(attri.getName().charAt(0)))
+			warning("Name should start with capital since methods are directly associated in generation", BookingDSLPackage.eINSTANCE.getAttribute_Name());
+	}
+	
+	//equally important for decs
+	@Check
+	public void warnIfDecNotCap(Declaration dec) {
+		if(!Character.isUpperCase(dec.getName().charAt(0)))
+			warning("Name should start with capital since methods are directly associated in generation", BookingDSLPackage.eINSTANCE.getBaseDeclaration_Name());
+	
+	}
+	
+	@Check
+	public void errorIfEntityHasNoRelationToResource(Entity ent) {
+		
+	}
+	
+	@Check
+	public void errorIfResourceHasNoRelationToSchedule(Resource res) {
+		
+	}
+	
+	@Check
+	public void errorIfBookingHasNoRelationToSchedule(Booking book) {
+		
+	}
+	
+	@Check
+	public void errorOnCircularDependencies(Declaration dec) {
+		
+	}
+	
+	@Check
+	public void errorOnCircularInheretence(Customer cust) {
+		
+	}
+	
+	@Check
+	public void errorOnCircularInheretence(Resource res) {
+		
+	}
+	
+	//These if they make sense - double check
+	@Check
+	public void errorOnDuplicateNameAndType(Declaration dec) {
+		
+	}
+	
+	//Also check for attribute within same class? Not sure if relevant
+	
+	
 }
