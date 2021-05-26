@@ -10,17 +10,58 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
 import static org.junit.Assert.assertTrue
+import org.xtext.example.mydsl.bookingDSL.BookingDSLPackage
+import javax.inject.Inject
+import org.xtext.example.mydsl.parser.antlr.BookingDSLParser
+import org.xtext.example.mydsl.bookingDSL.impl.SystemImpl
+import org.xtext.example.mydsl.bookingDSL.Resource
+import org.xtext.example.mydsl.bookingDSL.Booking
+import org.xtext.example.mydsl.bookingDSL.System
+import org.xtext.example.mydsl.bookingDSL.Schedule
+import org.xtext.example.mydsl.bookingDSL.Entity
+import org.xtext.example.mydsl.bookingDSL.Attribute
 
 @ExtendWith(InjectionExtension)
 @InjectWith(BookingDSLInjectorProvider)
 class BookingDSLParsingTest {
-	@Test def void test(){
-		assertTrue(true);
+	@Inject 
+	ParseHelper<SystemImpl> parser
+	
+	
+	@Test 
+	def void T01_systemName(){
+		val result = parser.parse('''
+			system BookingSystem{
+				
+			}
+		''')
+		Assertions.assertNotNull(result)
+		Assertions.assertTrue(result.name.equals("BookingSystem"))
 	}
 	
-	//Assert gen
+	@Test
+	def void T02_resourceName(){
+		val result = parser.parse('''
+			system x {
+				resource r{ }
+			}
+		''')
+		Assertions.assertNotNull(result.name)
+		Assertions.assertTrue(result.baseDeclaration.size==1)
+		Assertions.assertTrue(result.baseDeclaration.get(0) instanceof Resource)
+		Assertions.assertTrue((result.baseDeclaration.get(0) as Resource).name.equals("r"))
+	}
 	
-	//Assert parser
-	
-	//Assert validation
+	@Test
+	def void T03_resourcesAttributeName(){
+		val result = parser.parse('''
+			system x {
+				resource r{
+					name : string
+				}
+			}
+		''')
+		Assertions.assertNotNull(result.baseDeclaration.get(0))
+		Assertions.assertTrue(((result.baseDeclaration.get(0) as Resource).eContents.get(0) as Attribute).name.equals("name"))
+	}
 }
