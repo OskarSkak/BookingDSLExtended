@@ -26,8 +26,34 @@ import java.util.ArrayList
 class BookingDSLScopeProvider extends AbstractBookingDSLScopeProvider {
 	override getScope(EObject context, EReference reference){
 		if(context instanceof Var && reference==Literals.VAR__NAME){
-			val seen = new HashSet<Customer>
-			var entity = EcoreUtil2.getContainerOfType(context,Customer)
+			val seen = new HashSet<Declaration>
+			var entity = EcoreUtil2.getContainerOfType(context,Declaration)
+			val candidates = new ArrayList<Member>
+			if(entity instanceof Customer){
+				while(entity!==null) {
+					if(seen.contains(entity)) return super.getScope(context, reference) // scope undefined
+					seen.add(entity)
+					candidates.addAll(entity.members.filter(Member))
+					entity = entity.superType
+				}
+			}
+			else if(entity instanceof Resource){
+				while(entity!==null) {
+					if(seen.contains(entity)) return super.getScope(context, reference) // scope undefined
+					seen.add(entity)
+					candidates.addAll(entity.members.filter(Member))
+					entity = entity.superType
+				}
+			}else{
+				candidates.addAll(entity.members.filter(Member))
+			}
+			
+			return Scopes.scopeFor(candidates)
+		}
+		/* 
+		if(context instanceof Var && reference==Literals.VAR__NAME){
+			val seen = new HashSet<Resource>
+			var entity = EcoreUtil2.getContainerOfType(context,Resource)
 			val candidates = new ArrayList<Member>
 			while(entity!==null) {
 				if(seen.contains(entity)) return super.getScope(context, reference) // scope undefined
@@ -36,7 +62,7 @@ class BookingDSLScopeProvider extends AbstractBookingDSLScopeProvider {
 				entity = entity.superType
 			}
 			return Scopes.scopeFor(candidates)
-		}
+		}*/
 		
 		return super.getScope(context, reference)
 	}
