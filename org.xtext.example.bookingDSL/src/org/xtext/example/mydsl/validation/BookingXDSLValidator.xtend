@@ -36,6 +36,34 @@ class BookingXDSLValidator extends AbstractBookingDSLValidator {
 				}
 			}
 		}
+		var withSupertype = declaration
+		
+		if(withSupertype instanceof Customer){
+			while(withSupertype !== null){
+				withSupertype = withSupertype.superType
+				for(m : withSupertype.members){
+					if(m instanceof Attribute){
+						if(m.name.equals("Name") || m.name.equals("name")){
+							hasName = true
+						}
+					}
+				}
+			}
+		}
+		
+		if(withSupertype instanceof Resource){
+			while(withSupertype !== null){
+				withSupertype = withSupertype.superType
+				for(m : withSupertype.members){
+					if(m instanceof Attribute){
+						if(m.name.equals("Name") || m.name.equals("name")){
+							hasName = true
+						}
+					}
+				}
+			}
+		}
+		
 		if (!hasName) {
 			// Return warning that there are no name attribute
 			warning("This declaration has no name", BookingDSLPackage::eINSTANCE.getBaseDeclaration_Name())
@@ -88,16 +116,28 @@ class BookingXDSLValidator extends AbstractBookingDSLValidator {
 		}
 	}
 
-	//App wont function properly without - should be allowed in case user wants custom rules though
 	@Check def void warnIfResourceHasNoRelationToSchedule(Resource res) {
 		var hasCorrectRelation = false
 		
-		for(e : res.eContents){
+		/*for(e : res.eContents){
 			if(e instanceof Relation){
 				if(e.plurality.equals("one") && e.relationType.eClass.name.equals("Schedule")){
 					hasCorrectRelation = true
 				}
 			}
+		}*/
+		
+		var r = res
+		while(r !== null){
+			for(e : r.eContents){
+				if(e instanceof Relation){
+					if(e.plurality.equals("one") && e.relationType.eClass.name.equals("Schedule")){
+						hasCorrectRelation = true
+					}
+				}
+			}
+			
+			r = r.superType
 		}
 		
 		if(!hasCorrectRelation){
