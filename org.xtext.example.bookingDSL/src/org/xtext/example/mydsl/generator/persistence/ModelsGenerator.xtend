@@ -95,6 +95,7 @@ class ModelsGenerator {
 			''')
 	}
 	
+	/* 
 	static def void genFile(IFileSystemAccess2 fsa, Declaration dec, String systemName, String name){
 		fsa.generateFile('''«systemName»/«systemName»/Persistence/Models/«name».cs''', 
 			'''
@@ -117,6 +118,47 @@ class ModelsGenerator {
 			    }
 			}
 			''')
+	}*/
+	
+	static def void genFile(IFileSystemAccess2 fsa, Declaration dec, String systemName, String name){
+		fsa.generateFile('''«systemName»/«systemName»/Persistence/Models/«name».cs''', 
+			'''
+			using System;
+			using System.Collections.Generic;
+			
+			namespace «systemName».Persistence.Models
+			{
+			    public class «name» : IEntity
+			    {
+			    	public Guid Id {get; set;}
+			        «FOR mem : dec.members»
+			        «genField(mem)»
+			        «ENDFOR»
+			    }
+			}
+			''')
+	}
+	
+	static def dispatch genField(Attribute att){
+		'''
+		«IF (!att.array)»
+		public «att.type» «att.name» {get; set;}
+		«ENDIF»
+		«IF (att.array)»
+		public List<«att.type»> «att.name» {get; set;}
+		«ENDIF»
+		'''
+	}
+	
+	static def dispatch genField(Relation re){
+		'''
+		«IF (re.plurality.equals("one"))»
+		public «re.relationType.name» «re.name» {get; set;} 
+		«ENDIF»
+		«IF (re.plurality.equals("many"))»
+		public List<«re.relationType.name»> «re.name» {get; set;} 
+		«ENDIF»
+		'''
 	}
 	
 	static def CharSequence attribute(Attribute att){

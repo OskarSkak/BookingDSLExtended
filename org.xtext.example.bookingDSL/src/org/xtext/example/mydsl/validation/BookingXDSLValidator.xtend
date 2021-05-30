@@ -15,6 +15,7 @@ import org.xtext.example.mydsl.bookingDSL.Resource
 import java.util.HashSet
 import org.xtext.example.mydsl.bookingDSL.Relation
 import org.xtext.example.mydsl.bookingDSL.Schedule
+import org.xtext.example.mydsl.bookingDSL.Constraint
 
 /** 
  * This class contains custom validation rules. 
@@ -81,6 +82,10 @@ class BookingXDSLValidator extends AbstractBookingDSLValidator {
 				return; 
 			}
 		}
+	}
+	
+	@Check def void errorIfConstraintVarsNotNumbers(Constraint c){
+		
 	}
 
 	// Vars are also methods in dotnet - should be with capital letter (although not required)
