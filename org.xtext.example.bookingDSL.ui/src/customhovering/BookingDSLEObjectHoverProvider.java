@@ -9,7 +9,7 @@ public class BookingDSLEObjectHoverProvider extends DefaultEObjectHoverProvider{
 	@Override
 	protected String getFirstLine(EObject o) {
 		if(o instanceof System) {
-			return "TEST OF HEADER";
+			return "The system represents a whole organisation or business";
 		}
 		
 		return super.getFirstLine(o);
