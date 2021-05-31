@@ -31,7 +31,7 @@ class BookingDSLValidatorTest {
 	@Inject extension ValidationTestHelper valAssertions
 	
 	@Test
-	def void V01_testWarningWhenLowercaseNameOfDeclaration(){
+	def void V01_warningWhenLowercaseNameOfDeclaration(){
 		('''system S{
 			resource r{
 			
@@ -45,9 +45,137 @@ class BookingDSLValidatorTest {
 	}
 	
 	@Test
-	def void V02_testNoWarningsOrErrors(){
+	def void V02_noWarningsOrErrors(){
 		('''system S{
 			
 		}''').parse.assertNoIssues
 	}
+	
+	//IMPLEMENT PROPER VALIDATOR FOR RESOURCE + CUST FRMO HERE
+	@Test
+	def void V03_warningIfNoDisplayNameOnEntity(){
+		('''
+		system S{
+			entity E{}
+		}
+		''').parse.assertWarning(
+			BookingDSLPackage::eINSTANCE.entity,
+			null,
+			"This declaration has no name"
+		)
+	}
+	
+	/*
+	 * @Test
+	 * def void V04_warningIfNoDisplayNameOnSubOrSuperClass(){
+	 * 
+	 * }
+	 */
+	 
+	 @Test
+	 def void V05_errorIfDisplayNameIsNotString(){
+	 	('''
+	 	system S{
+	 		entity E{
+	 			name: int	
+	 		}
+	 	}
+	 	''').parse.assertError(
+	 		BookingDSLPackage::eINSTANCE.attribute, 
+	 		null,
+	 		"Attribute of type name can only be of type string"
+	 	)
+	 }
+	 
+	 @Test
+	 def void V06_warnIfAttributeNotCap(){
+	 	('''
+	 	system S{
+	 		entity E{
+	 			name: string	
+	 		}
+	 	}
+	 	''').parse.assertWarning(
+	 		BookingDSLPackage::eINSTANCE.attribute,
+	 		null,
+	 		"Name should start with capital since methods are directly associated in generation"
+	 	)
+	 }
+	 
+	 @Test
+	 def void V07_warnIfEntityHasNoRelationToResource(){
+	 	('''
+	 	system S{
+	 		entity E{	
+	 		}
+	 	}
+	 	''').parse.assertWarning(
+	 		BookingDSLPackage::eINSTANCE.baseDeclaration, 
+	 		null, 
+	 		"Entity has no plural relation to resource - proper bookings may not be able to be made in generated application"
+	 	)
+	 }
+	 
+	 @Test
+	 def void V08_warnIfResourceHasNoRelationToSchedule(){
+	 	('''
+	 	system S{
+	 		resource R{
+	 		}
+	 	}
+	 	''').parse.assertWarning(
+	 		BookingDSLPackage::eINSTANCE.baseDeclaration, 
+	 		null, 
+	 		"Resource has no singular relation to schedule - proper bookings may not be able to be made in generated application"
+	 	)
+	 }
+	 
+	 @Test
+	 def void V09_warnIfBookingHasNoRelationToSchedule(){
+	 	('''
+	 	system S{
+	 		booking B{
+	 		}
+	 	}
+	 	''').parse.assertWarning(
+	 		BookingDSLPackage::eINSTANCE.baseDeclaration, 
+	 		null, 
+			"Booking has no singular relation to schedule - proper bookings may not be able to be made in generated application"
+	 	)
+	 }
+	 
+	 @Test
+	 def void V10_errorOnCircularDependencies(){
+	 	('''
+	 	system S{
+	 		resource R{
+	 			has one times: S
+	 		}
+	 		
+	 		schedule S{
+	 			has one instance: R	
+	 		}
+	 	}
+	 	''').parse.assertError(
+	 		BookingDSLPackage.eINSTANCE.baseDeclaration, 
+	 		null, 
+	 		'Cyclic dependency to R'
+	 	)
+	 }
+	 
+	 @Test
+	 def void V11_errorOnDuplicateName(){
+	 	('''
+	 	system S{
+	 		resource R{
+	 			A: string
+	 			A: int
+	 		}
+	 	}
+	 	''').parse.assertError(
+	 		BookingDSLPackage.eINSTANCE.baseDeclaration, 
+	 		null, 
+	 		"Duplicate names of Attributes not allowed"
+	 	)
+	 }
 }

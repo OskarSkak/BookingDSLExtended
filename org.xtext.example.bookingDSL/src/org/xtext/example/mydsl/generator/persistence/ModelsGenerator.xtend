@@ -161,6 +161,10 @@ class ModelsGenerator {
 		'''
 	}
 	
+	static def dispatch genField(Constraint co){
+		
+	}
+	
 	static def CharSequence attribute(Attribute att){
 		'''
 		«IF (!att.array)»
