@@ -51,7 +51,6 @@ class BookingDSLValidatorTest {
 		}''').parse.assertNoIssues
 	}
 	
-	//IMPLEMENT PROPER VALIDATOR FOR RESOURCE + CUST FRMO HERE
 	@Test
 	def void V03_warningIfNoDisplayNameOnEntity(){
 		('''
@@ -64,13 +63,6 @@ class BookingDSLValidatorTest {
 			"This declaration has no name"
 		)
 	}
-	
-	/*
-	 * @Test
-	 * def void V04_warningIfNoDisplayNameOnSubOrSuperClass(){
-	 * 
-	 * }
-	 */
 	 
 	 @Test
 	 def void V05_errorIfDisplayNameIsNotString(){

@@ -50,19 +50,6 @@ class BookingDSLScopeProvider extends AbstractBookingDSLScopeProvider {
 			
 			return Scopes.scopeFor(candidates)
 		}
-		/* 
-		if(context instanceof Var && reference==Literals.VAR__NAME){
-			val seen = new HashSet<Resource>
-			var entity = EcoreUtil2.getContainerOfType(context,Resource)
-			val candidates = new ArrayList<Member>
-			while(entity!==null) {
-				if(seen.contains(entity)) return super.getScope(context, reference) // scope undefined
-				seen.add(entity)
-				candidates.addAll(entity.members.filter(Member))
-				entity = entity.superType
-			}
-			return Scopes.scopeFor(candidates)
-		}*/
 		
 		return super.getScope(context, reference)
 	}

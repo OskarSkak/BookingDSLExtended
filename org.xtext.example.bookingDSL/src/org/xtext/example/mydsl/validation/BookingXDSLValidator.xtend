@@ -83,10 +83,6 @@ class BookingXDSLValidator extends AbstractBookingDSLValidator {
 			}
 		}
 	}
-	
-	@Check def void errorIfConstraintVarsNotNumbers(Constraint c){
-		
-	}
 
 	// Vars are also methods in dotnet - should be with capital letter (although not required)
 	@Check def void warnIfAttributeNotCap(Attribute attri) {
